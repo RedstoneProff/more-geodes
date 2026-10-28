@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "spectrum"
+    }
+  ],
+  "type": "geodes:config_add_features",
+  "biomes": "#geodes:has_bismuth_geode",
+  "feature": "geodes:bismuth_geode",
+  "step": "vegetal_decoration",
+  "config_key": "generate_bismuth_geodes",
+  "requires_mod": "spectrum"
+}

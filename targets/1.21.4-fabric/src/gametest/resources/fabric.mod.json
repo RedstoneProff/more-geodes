@@ -1,0 +1,24 @@
+{
+	"schemaVersion": 1,
+	"id": "geodes_gametest",
+	"name": "More Geodes GameTests",
+	"version": "1.9.3",
+	"environment": "*",
+	"license": "LGPL-3.0",
+	"entrypoints": {
+		"fabric-gametest": [
+			"com.github.thedeathlycow.moregeodes.testmod.BuddingGrowthTests",
+			"com.github.thedeathlycow.moregeodes.testmod.ClusterHarvestTests",
+			"com.github.thedeathlycow.moregeodes.testmod.LargeCrystalBreakTests",
+			"com.github.thedeathlycow.moregeodes.testmod.LocatorTests",
+			"com.github.thedeathlycow.moregeodes.testmod.PiglinFoolsGoldTests",
+			"com.github.thedeathlycow.moregeodes.testmod.QuartzOscillatorTests"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.16.0",
+		"minecraft": "~1.21.4",
+		"fabric-api": "*",
+		"geodes": "*"
+	}
+}

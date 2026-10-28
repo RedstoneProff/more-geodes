@@ -1,0 +1,8 @@
+{
+	"type": "minecraft:stonecutting",
+	"ingredient": {
+		"item": "geodes:pyrite"
+	},
+	"result": "geodes:pyrite_stairs",
+	"count": 1
+}

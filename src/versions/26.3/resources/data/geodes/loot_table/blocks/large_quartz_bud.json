@@ -1,0 +1,60 @@
+{
+    "type": "minecraft:block",
+    "pools": [
+        {
+            "rolls": 1,
+            "bonus_rolls": 0,
+            "entries": [
+                {
+                    "type": "minecraft:alternatives",
+                    "children": [
+                        {
+                            "type": "minecraft:item",
+                            "name": "geodes:large_quartz_bud",
+                            "condition": "minecraft:tool/can_silk_touch"
+                        },
+                        {
+                            "type": "minecraft:alternatives",
+                            "children": [
+                                {
+                                    "type": "minecraft:item",
+                                    "name": "minecraft:quartz",
+                                    "condition": {
+                                        "type": "minecraft:match_tool",
+                                        "predicate": {
+                                            "items": "#minecraft:cluster_max_harvestables"
+                                        }
+                                    },
+                                    "modifier": [
+                                        {
+                                            "type": "minecraft:set_count",
+                                            "count": 3
+                                        },
+                                        {
+                                            "type": "minecraft:apply_bonus",
+                                            "enchantment": "minecraft:fortune",
+                                            "formula": "minecraft:ore_drops"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "minecraft:item",
+                                    "name": "minecraft:quartz",
+                                    "modifier": [
+                                        {
+                                            "type": "minecraft:set_count",
+                                            "count": 3
+                                        },
+                                        {
+                                            "type": "minecraft:explosion_decay"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,8 @@
+{
+	"type": "minecraft:stonecutting",
+	"ingredient": {
+		"item": "geodes:polished_gypsum_block"
+	},
+	"result": "geodes:chiseled_gypsum",
+	"count": 1
+}

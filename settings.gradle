@@ -1,10 +1,26 @@
 pluginManagement {
     repositories {
+        gradlePluginPortal()
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
         }
-        mavenCentral()
-        gradlePluginPortal()
+        maven {
+            name = 'NeoForge'
+            url = 'https://maven.neoforged.net/releases'
+        }
+    }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
+}
+
+rootProject.name = 'more-geodes'
+
+file('targets').listFiles()?.sort { it.name }?.each { dir ->
+    if (dir.isDirectory() && new File(dir, 'build.gradle').exists()) {
+        include(":${dir.name}")
+        project(":${dir.name}").projectDir = dir
     }
 }

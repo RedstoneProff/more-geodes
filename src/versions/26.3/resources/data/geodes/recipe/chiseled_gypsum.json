@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"#",
+		"#"
+	],
+	"key": {
+		"#": "geodes:polished_gypsum_slab"
+	},
+	"result": {
+		"id": "geodes:chiseled_gypsum",
+		"count": 1
+	}
+}

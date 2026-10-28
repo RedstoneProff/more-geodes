@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": {
+    "geodes:gypsum_shard": {
+      "chance": 1.0
+    }
+  }
+}

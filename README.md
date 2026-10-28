@@ -1,10 +1,37 @@
 # More Geodes
 
-Curse Forge mod page: https://www.curseforge.com/minecraft/mc-mods/emerald-geodes
+More Geodes adds emerald, quartz, diamond, echo, lapis lazuli and gypsum geodes to Minecraft, along with the crystal locators used to find them.
 
-Modrinth mod page: https://modrinth.com/mod/more-geodes
+This repository is a multi-version edition of [More Geodes](https://github.com/TheDeathlyCow/more-geodes) by TheDeathlyCow. It keeps the upstream mod id (`geodes`) and content, and builds for several Minecraft versions on both Fabric and NeoForge from one source tree.
 
-The CurseForge and Modrinth mod pages as well as this repository are the only official download pages for this mod, do not trust any version of this mod from elsewhere! 
+## Supported versions
+
+| Minecraft | Java | Fabric | NeoForge |
+| --------- | ---- | ------ | -------- |
+| 1.20.4    | 17   | yes    | yes      |
+| 1.20.6    | 21   | yes    | yes      |
+| 1.21.1    | 21   | yes    | yes      |
+| 1.21.4    | 21   | yes    | yes      |
+| 26.3      | 25   | yes    | yes      |
+
+Minecraft 1.20.1 and older are covered by the [upstream project](https://github.com/TheDeathlyCow/more-geodes). Forge is covered by More Geodes Reforged.
+
+The Fabric build for 1.21.1 declares support for 1.21 to 1.21.1, and the 1.21.4 build for 1.21.2 to 1.21.4; the tests run against the version in the table.
+
+## Building
+
+Gradle itself has to run on JDK 25 (the Fabric Loom versions used here require it). Point `JAVA_HOME` at a JDK 25 install; the JDKs the targets compile with (17, 21 and 25) are resolved through Gradle toolchains.
+
+```
+./gradlew buildAll       # builds every target into dist/<mc>-<loader>/
+./gradlew verifyAll      # unit tests, GameTests and coverage for every target
+./gradlew :1.21.1-fabric:build
+./gradlew :1.21.1-fabric:runClient
+```
+
+On Windows use `gradlew.bat`. Each target is a Gradle project named `<mc>-<loader>`, for example `:1.20.4-neoforge` or `:26.3-fabric`. Per-target tasks include `build`, `test`, `runGametest` and `jacocoTestReport`. Jars are named `more-geodes-<loader>-<mc>-1.9.3.jar`.
+
+`verifyAll --continue` runs the remaining targets when one fails. The layout of the source tree and the differences between versions are described in [docs/source-layout.md](docs/source-layout.md).
 
 # New Geodes
 
@@ -56,7 +83,7 @@ In order to tune a crystal locator, you must craft an untuned base Crystal Locat
 
 If you want to add a tuning for a geode in your own mod or mod packs, you can do so with a datapack.
 
-First, specify the tuning in a file in `data/<namespace>/geodes/tunings/<tuning_path>.json`. 
+First, specify the tuning in a file in `data/<namespace>/geodes/tunings/<tuning_path>.json`.
 
 <details>
 
@@ -96,12 +123,12 @@ Tuning JSON schema
 ```
 </details>
 
-If you want to make the tuning craftable, you must use the special `geodes:crystal_tuning` recipe type. This recipe type is very similar to a shapeless recipe, except the output item is replaced by the output tuning. The output item will always be a Tuned Crystal Locator.
+If you want to make the tuning craftable, you must use the special `geodes:crystal_tuning` recipe type. This recipe type is very similar to a shapeless recipe, except the output item is replaced by the output tuning. The output item will always be a Tuned Crystal Locator. The recipe goes in `data/<namespace>/recipes/` on 1.20.4 and 1.20.6 and in `data/<namespace>/recipe/` on 1.21 and later.
 
 <details>
 
 <summary> 
-Example crystal tuning recipe
+Example crystal tuning recipe (1.20.4, 1.20.6 and 1.21.1)
 </summary>
 
 ```json5
@@ -127,6 +154,15 @@ Example crystal tuning recipe
 
 </details>
 
+On 1.21.4 and 26.3 ingredients are plain item ids instead of `{"item": ...}` objects:
+
+```json
+"ingredients": [
+    "minecraft:amethyst_shard",
+    "geodes:crystal_locator"
+]
+```
+
 # Echo Locator
 
 The Echo Locator has a similar function to the Crystal Locator, however instead of locating Geodes it can be used to locate ores within 6 blocks of the user. Every ore it detects causes 1 damage to the item. The Echo Locator is crafted from 4 Echo Shards and 2 Bones. This is useful for getting those pesky ores hidden just inside a corner or behind a block of stone next to your strip mine.
@@ -147,10 +183,10 @@ This mod uses the namespace `geodes`. If you wish to make changes to the feature
 
 ## Datapack Addons
 
-In the [datapack addons folder](./datapack_addons/) you can find downloads for two datapack addons for this mod. They're each pretty self explanatory, and act as ideas for how one might decide to try and make a datapack configuration for this mod. 
+In the [datapack addons folder](https://github.com/TheDeathlyCow/more-geodes/tree/main/datapack_addons) of the upstream repository you can find downloads for two datapack addons for this mod. They're each pretty self explanatory, and act as ideas for how one might decide to try and make a datapack configuration for this mod. 
 
 ## Configured features
-You can make changes to the geode configured features by replacing their files in the directories `geodes/worldgen/configured_feature/emerald_geode.json`, `geodes/worldgen/configured_feature/quartz_geode.json`, etc. 
+You can make changes to the geode configured features by replacing their files in the directories `geodes/worldgen/configured_feature/emerald_geode.json`, `geodes/worldgen/configured_feature/quartz_geode.json`, etc. On 26.3 the directory is `geodes/worldgen/feature/` instead.
 
 ## Placed features
 Similar to the configured features, you can edit the geode placed features by replacing their files in the directories `geodes/worldgen/placed_feature/emerald_geode.json`, `geodes/worldgen/placed_feature/quartz_geode.json`, etc. 
@@ -180,7 +216,7 @@ Each of these values are booleans and are parsed using [Boolean#parseBoolean](ht
 
 ## Carpet Integration
 
-If you have the [Carpet](https://modrinth.com/mod/carpet) mod installed, turning on the setting `moveableAmethyst` will allow you to pick up Budding blocks with silk touch and push them with pistons.
+On Fabric, if you have the [Carpet](https://modrinth.com/mod/carpet) mod installed, turning on the setting `moveableAmethyst` will allow you to pick up Budding blocks with silk touch and push them with pistons.
 
 ## AE2 Integration
 
@@ -190,10 +226,14 @@ If you have the [Applied Energistics 2](https://modrinth.com/mod/ae2) mod instal
 
 If you have [Spectrum](https://modrinth.com/mod/spectrum) installed, you'll be able to use the `generate_bismuth_geodes` setting to find Bismuth geodes in your world. Furthermore, tunings for Topaz, Citrine, and Moonstone geodes will automatically be added.
 
-## Create Integration
-
-If you have [Create](https://modrinth.com/mod/create-fabric) installed, the crystal blocks, clusters, Pyrite, and Gabbro can all be crushed to produce various materials. Note that Diamond and Echo blocks do not produce as much materials as their Amethyst, Quartz, Emerald, Lapis, and Gypsum counterparts. 
-
 # Translations
 
-If you'd like to create translations for More Geodes, the project is on [Crowdin](https://crowdin.com/project/more-geodes). You can also provide translations via issue or pull request if you so wish. Thanks for your contribution!
+If you'd like to create translations for More Geodes, the upstream project is on [Crowdin](https://crowdin.com/project/more-geodes). You can also provide translations via issue or pull request if you so wish.
+
+# Credits
+
+More Geodes was created by [TheDeathlyCow](https://github.com/TheDeathlyCow). Contributors to the original project: Nerjal Nosk and SalveMundiProd. Upstream source: https://github.com/TheDeathlyCow/more-geodes
+
+# License
+
+More Geodes is licensed under the GNU Lesser General Public License v3.0; see [LICENSE](LICENSE). This is a modified version of the original; see [NOTICE](NOTICE) for the list of changes and copyright notices.

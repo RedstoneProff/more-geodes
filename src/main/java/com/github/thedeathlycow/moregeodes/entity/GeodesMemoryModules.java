@@ -2,10 +2,10 @@ package com.github.thedeathlycow.moregeodes.entity;
 
 import com.github.thedeathlycow.moregeodes.MoreGeodes;
 import com.mojang.serialization.Codec;
-import net.minecraft.entity.ai.brain.MemoryModuleType;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registry;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import com.github.thedeathlycow.moregeodes.util.GeodesIds;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 
 import java.util.Optional;
 
@@ -20,8 +20,8 @@ public class GeodesMemoryModules {
 
     private static void register(String id, MemoryModuleType<?> moduleType) {
         Registry.register(
-                Registries.MEMORY_MODULE_TYPE,
-                new Identifier(MoreGeodes.MODID, id),
+                BuiltInRegistries.MEMORY_MODULE_TYPE,
+                GeodesIds.of(MoreGeodes.MODID, id),
                 moduleType
         );
     }

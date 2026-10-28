@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"key": {
+		"#": "geodes:pyrite"
+	},
+	"pattern": [
+		"###",
+		"###"
+	],
+	"result": {
+		"id": "geodes:pyrite_wall",
+		"count": 6
+	}
+}

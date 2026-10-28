@@ -1,0 +1,185 @@
+
+import groovy.xml.XmlParser
+import groovy.xml.XmlNodePrinter
+
+plugins {
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+}
+
+ext {
+    mc = '26.3'
+    loader = 'fabric'
+    // unobfuscated: the plain jar is the distributable
+    distTask = 'jar'
+}
+
+base {
+    archivesName = "${archives_base_name}-${project.ext.loader}-${project.ext.mc}"
+}
+
+sourceSets {
+    gametest {
+        compileClasspath += sourceSets.main.compileClasspath
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.runtimeClasspath
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
+loom {
+    mods {
+        "geodes" {
+            sourceSet sourceSets.main
+        }
+        "geodes_gametest" {
+            sourceSet sourceSets.gametest
+        }
+    }
+
+    runs {
+        gametest {
+            inherit server
+            name "GameTest Server"
+            source sourceSets.gametest
+            vmArg "-Dfabric-api.gametest=true"
+            vmArg "-Dfabric-api.gametest.report-file=${layout.buildDirectory.get().asFile.absolutePath}/gametest-results/gametest.xml"
+            vmArg "-Xms256m"
+            vmArg "-Xmx768m"
+            runDir "build/gametest-run"
+            ideConfigGenerated false
+        }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+}
+
+sourceSets.main.java.srcDir '../../src/main/java'
+sourceSets.main.java.srcDir '../../src/versions/26.3/java'
+sourceSets.main.java.srcDir '../../src/loader/fabric/java'
+// the version sources also hold this version's NeoForge adapter classes
+sourceSets.main.java.exclude 'com/github/thedeathlycow/moregeodes/neoforge/**'
+// BlockRenderLayerMap was removed on 26.x, so there is no cutout registration here
+sourceSets.main.java.exclude 'com/github/thedeathlycow/moregeodes/client/GeodesCutouts.java'
+sourceSets.main.resources.srcDir '../../src/main/resources'
+sourceSets.main.resources.srcDir '../../src/versions/26.3/resources'
+sourceSets.test.java.srcDir '../../src/test/java'
+sourceSets.test.java.srcDir 'src/test/java'
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+    it.options.release = 25
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+    withSourcesJar()
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'geodes.test.mc', project.ext.mc
+}
+
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = '0.8.13'
+}
+
+jacocoTestReport {
+    dependsOn test
+    dependsOn runGametest
+    executionData fileTree(dir: layout.buildDirectory.dir('jacoco'), include: '*.exec')
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+configurations {
+    // the runtime classifier is the real agent; the plain jar has no Premain-Class
+    gametestAgent
+}
+dependencies {
+    gametestAgent 'org.jacoco:org.jacoco.agent:0.8.13:runtime'
+}
+tasks.matching { it.name == 'runGametest' }.configureEach {
+    def execFile = layout.buildDirectory.file('jacoco/gametest.exec')
+    doFirst {
+        def agentFile = configurations.gametestAgent.singleFile
+        jvmArgs "-javaagent:${agentFile.absolutePath}=destfile=${execFile.get().asFile.absolutePath}"
+    }
+}
+
+processResources {
+    def version = project.version
+    inputs.property "version", version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": version
+    }
+}
+
+jar {
+    from(rootProject.file('LICENSE')) {
+        rename { "${it}_geodes" }
+    }
+}
+
+// the fabric-gametest reporter nests <testcase> inside an inner <testsuite>; flatten it to a standard JUnit file
+tasks.register('fixupGametestReport') {
+    doLast {
+        def report = layout.buildDirectory.file('gametest-results/gametest.xml').get().asFile
+        if (!report.exists()) {
+            return
+        }
+        def root = new XmlParser(false, false).parse(report)
+        def cases = root.depthFirst().findAll { it.name() == 'testcase' }
+        def suiteAttrs = root.depthFirst().findAll { it.name() == 'testsuite' }
+            .collectMany { it.attributes().entrySet() }
+            .findAll { it.key in ['time', 'timestamp'] }
+            .findAll { it.value != null && it.value != '0' }
+            .collectEntries { [it.key, it.value] }
+        def count = { String tag -> cases.count { it.children().any { it instanceof Node && it.name() == tag } } }
+        def out = new Node(null, 'testsuite', [
+            name    : 'fabric-gametest-api',
+            time    : (suiteAttrs['time'] ?: '0'),
+            timestamp: (suiteAttrs['timestamp'] ?: ''),
+            tests   : cases.size(),
+            failures: count('failure'),
+            errors  : count('error'),
+            skipped : count('skipped')
+        ])
+        cases.each { tc ->
+            def copy = new Node(out, 'testcase', tc.attributes())
+            tc.children().each { c ->
+                if (c instanceof Node) {
+                    def cc = new Node(copy, c.name(), c.attributes())
+                    c.children().each { t -> cc.append(t) }
+                } else {
+                    copy.append(c)
+                }
+            }
+        }
+        def writer = new PrintWriter(new BufferedWriter(new FileWriter(report)))
+        writer.println('<?xml version="1.0" encoding="UTF-8" standalone="no"?>')
+        new XmlNodePrinter(writer).print(out)
+        writer.close()
+    }
+}
+
+tasks.named('runGametest') {
+    finalizedBy 'fixupGametestReport'
+}

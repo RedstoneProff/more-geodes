@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": [
+		{
+			"item": "geodes:gypsum_shard"
+		},
+		{
+			"item": "geodes:gypsum_shard"
+		}
+	],
+	"result": {
+		"count": 1,
+		"item": "minecraft:sand"
+	}
+}

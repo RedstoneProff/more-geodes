@@ -1,0 +1,15 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "com.github.thedeathlycow.moregeodes.mixin",
+    "compatibilityLevel": "JAVA_25",
+    "mixins": [
+        "FoolsGoldBarterPiglinBrainMixin",
+        "PiglinMemoryMixin",
+        "SimpleBlockFeatureMixin",
+        "StepSoundMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

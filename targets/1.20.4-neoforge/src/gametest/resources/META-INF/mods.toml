@@ -1,0 +1,30 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+license="LGPL-3.0"
+
+[[mods]]
+modId="geodes_gametest"
+version="1.9.3"
+displayName="More Geodes GameTests"
+description='''Server-side GameTests for geodes (test-only, not shipped).'''
+
+[[dependencies.geodes_gametest]]
+modId="neoforge"
+type="required"
+versionRange="[20.4.167,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.geodes_gametest]]
+modId="minecraft"
+type="required"
+versionRange="[1.20.4,1.21)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.geodes_gametest]]
+modId="geodes"
+type="required"
+versionRange="[1,)"
+ordering="NONE"
+side="BOTH"

@@ -1,0 +1,7 @@
+{
+  "type": "geodes:config_add_features",
+  "biomes": "#geodes:has_extra_lapis_geodes",
+  "feature": "geodes:lapis_geode_extra",
+  "step": "underground_decoration",
+  "config_key": "generate_lapis_geodes"
+}

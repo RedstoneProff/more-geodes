@@ -1,0 +1,15 @@
+More Geodes (multi-version edition)
+
+This is a modified version of More Geodes by TheDeathlyCow
+(https://github.com/TheDeathlyCow/more-geodes), licensed under the GNU Lesser
+General Public License v3.0. The full licence text is in LICENSE.
+
+Changes: support for Minecraft 1.20.4, 1.20.6, 1.21.1, 1.21.4 and 26.3 on
+Fabric and NeoForge, built from a shared source tree with per-version and
+per-loader source sets.
+
+Modifications Copyright (c) 2026 the port maintainers.
+
+The original copyright notices remain with their authors: TheDeathlyCow, and
+the contributors Nerjal Nosk and SalveMundiProd. Original work Copyright (c)
+TheDeathlyCow and contributors.

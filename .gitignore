@@ -1,33 +1,29 @@
-# gradle
-
+# Gradle
 .gradle/
 build/
+dist/
 out/
-classes/
 
-# eclipse
+# Dev runs
+run/
+runs/
+logs/
+hs_err_pid*
+replay_pid*
+crash-reports/
 
-*.launch
-
-# idea
-
+# IDE
 .idea/
 *.iml
 *.ipr
 *.iws
-
-# vscode
-
-.settings/
 .vscode/
-bin/
 .classpath
 .project
+.settings/
+bin/
+.factorypath
 
-# macos
-
-*.DS_Store
-
-# fabric
-
-run/
+# OS
+.DS_Store
+Thumbs.db

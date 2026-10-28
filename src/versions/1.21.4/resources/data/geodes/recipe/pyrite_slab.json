@@ -1,0 +1,13 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"key": {
+		"#": "geodes:pyrite"
+	},
+	"pattern": [
+		"###"
+	],
+	"result": {
+		"id": "geodes:pyrite_slab",
+		"count": 6
+	}
+}

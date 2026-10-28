@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"key": {
+		"#": {
+			"item": "minecraft:calcite"
+		}
+	},
+	"pattern": [
+		"###",
+		"###"
+	],
+	"result": {
+		"id": "geodes:calcite_wall",
+		"count": 6
+	}
+}

@@ -1,7 +1,6 @@
 package com.github.thedeathlycow.moregeodes.config;
 
 import com.mojang.logging.LogUtils;
-import net.fabricmc.loader.api.FabricLoader;
 import org.slf4j.Logger;
 
 import java.io.*;
@@ -9,7 +8,6 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 public final class GeodesConfig {
-
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private static final String generateEmeraldGeodes = "generate_emerald_geodes";
@@ -59,13 +57,13 @@ public final class GeodesConfig {
         return Boolean.parseBoolean(properties.getProperty(generateBismuthGeodes));
     }
 
-    public void loadConfig() {
+    public void loadConfig(Path configDir) {
         this.loadDefaultConfig();
         this.properties = new Properties(this.defaultProperties);
-        try (FileReader reader = new FileReader(this.getConfigFile())) {
+        try (FileReader reader = new FileReader(this.getConfigFile(configDir))) {
             this.properties.load(reader);
         } catch (FileNotFoundException ignored) {
-            this.generateDefaultConfig();
+            this.generateDefaultConfig(configDir);
         } catch (IOException e) {
             LOGGER.error("Could not load More Geodes config, using default config instead. Failed with exception: " + e);
             return;
@@ -73,9 +71,8 @@ public final class GeodesConfig {
         LOGGER.info("Loaded More Geodes config!");
     }
 
-    private void generateDefaultConfig() {
-
-        try (FileWriter writer = new FileWriter(this.getConfigFile())) {
+    private void generateDefaultConfig(Path configDir) {
+        try (FileWriter writer = new FileWriter(this.getConfigFile(configDir))) {
             this.defaultProperties.store(writer, "Default config file for More Geodes. See the readme on GitHub for more information: https://github.com/TheDeathlyCow/more-geodes/blob/main/README.md");
         } catch (IOException e) {
             LOGGER.error("Error creating default More Geodes config: " + e);
@@ -83,7 +80,6 @@ public final class GeodesConfig {
         }
 
         LOGGER.info("Generated default config for More Geodes");
-
     }
 
     private void loadDefaultConfig() {
@@ -97,13 +93,7 @@ public final class GeodesConfig {
         defaultProperties.setProperty(generateBismuthGeodes, "true");
     }
 
-    private File getConfigFile() {
-        Path config = FabricLoader.getInstance()
-                .getConfigDir()
-                .resolve("geodes.properties");
-        File file = config.toFile();
-        assert file.isFile();
-        return file;
+    private File getConfigFile(Path configDir) {
+        return configDir.resolve("geodes.properties").toFile();
     }
-
 }
